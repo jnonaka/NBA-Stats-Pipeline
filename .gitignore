@@ -1,3 +1,6 @@
+# env file
+*.env
+
 # Local .terraform directories
 terraform/.terraform*
 
@@ -5,8 +8,12 @@ terraform/.terraform*
 *.tfstate
 *.tfstate.*
 
-# Crash log files
+# Log files
 crash.log
 crash.*.log
+*.log
+*logs
 
 **/.DS_Store
+
+**/__pycache__
