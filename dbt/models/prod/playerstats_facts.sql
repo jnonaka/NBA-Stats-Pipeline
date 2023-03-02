@@ -1,3 +1,5 @@
+{{ config(materialized="table") }}
+
 SELECT 
   b.season,
   a.game_id,
