@@ -20,7 +20,11 @@ if __name__ == "__main__":
 
     AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
     BUCKET = os.environ.get("GCP_GCS_BUCKET")
-    OBJECT = f"raw/{season_val}/{data_type}/{data_type}_{exec_date}.parquet"
+    
+    if data_type == 'teams':
+        OBJECT = f"raw/{season_val}/{data_type}/{data_type}.parquet"    
+    else:
+        OBJECT = f"raw/{season_val}/{data_type}/{data_type}_{exec_date}.parquet"
     LOCAL =  f"{AIRFLOW_HOME}/{data_type}_{exec_date}.parquet"
 
     upload_to_gcs(

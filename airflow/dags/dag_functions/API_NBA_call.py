@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import time
 import json
 
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
@@ -16,8 +17,10 @@ def api_url(data_type):
         return 'https://api-nba-v1.p.rapidapi.com/games', 'date'
     elif data_type == 'playerstats':
         return 'https://api-nba-v1.p.rapidapi.com/players/statistics', 'game'
+    elif data_type == 'teams':
+        return 'https://api-nba-v1.p.rapidapi.com/teams', 'league'
     else:
-        print("data_type input error detected. data_type should be \'games\' or \'playerstats\'")
+        print("data_type input error detected. data_type should be \'games\', \'playerstats\', or \'teams\'")
         sys.exit(1)
 
 def response_error_check(api_response):
@@ -33,7 +36,7 @@ def call_api(input, data_type):
     url, param_key =  api_url(data_type)
 
     try:
-        if param_key == 'date':
+        if param_key == 'date' or param_key == 'league':
             response = requests.request(
                 "GET", 
                 url=url,
@@ -47,17 +50,8 @@ def call_api(input, data_type):
 
         else:
             input_list = json.loads(input)
-            print(input_list)
-            
-            # responses = [
-            #     requests.request(
-            #         "GET", 
-            #         url=url,
-            #         headers=headers, 
-            #         params={param_key: i}
-            #     ).json()['response'] for i in input_list
-            # ]
             response_list = []
+            counter = 0
 
             for i in input_list:
                 response = requests.request(
@@ -71,10 +65,15 @@ def call_api(input, data_type):
 
                 response_list.append(response['response'])
                 
+                counter+=1
+                print(f'Completed {counter}/{len(input_list)} playerstats API calls...')
+                time.sleep(6)
+                
             return [i for response in response_list for i in response]
     
     except Exception as e:
         print(f'API connection error detected: {e}')
+        print('There is a 10 requests per minute for the Basic plan. Please wait one minute before running again')
         sys.exit(1)
 
 if __name__ == "__main__":        

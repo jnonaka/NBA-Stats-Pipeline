@@ -13,10 +13,10 @@ def extract_to_df(api_response):
     season = [game['season'] for game in api_response]
     datetime_utc = [game['date']['start'] for game in api_response]
     away_team_id = [game['teams']['visitors']['id'] for game in api_response]
-    away_team_name = [game['teams']['visitors']['name'] for game in api_response]
+    # away_team_name = [game['teams']['visitors']['name'] for game in api_response]
     away_team_code = [game['teams']['visitors']['code'] for game in api_response]
     home_team_id = [game['teams']['home']['id'] for game in api_response]
-    home_team_name = [game['teams']['home']['name'] for game in api_response]
+    # home_team_name = [game['teams']['home']['name'] for game in api_response]
     home_team_code = [game['teams']['home']['code'] for game in api_response]
     away_score = [game['scores']['visitors']['points'] for game in api_response]
     home_score = [game['scores']['home']['points'] for game in api_response]
@@ -31,10 +31,8 @@ def extract_to_df(api_response):
         'season': season, 
         'datetime_utc': datetime_utc,
         'away_team_id': away_team_id,
-        'away_team_name': away_team_name,
         'away_team_code': away_team_code,
         'home_team_id': home_team_id,
-        'home_team_name': home_team_name,
         'home_team_code': home_team_code,
         'away_score': away_score,
         'home_score': home_score
