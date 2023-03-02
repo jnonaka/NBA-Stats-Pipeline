@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: playerstats_facts
+    description: > 
+      Insert description here
+    # columns:
+  - name: games_facts
+    description: > 
+      Insert description here
+    # columns:
