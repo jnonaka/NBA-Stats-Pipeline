@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: raw
+    database: nba-stats-377921
+    schema: nba_data_all
+    
+    tables:
+      - name: playerstats
+      - name: teams
+      - name: games
+
+models:
+  - name: playerstats_stage
+    description: > 
+      Insert description here
+    # columns:
+  - name: games_stage
+    description: > 
+      Insert description here
+    # columns:
