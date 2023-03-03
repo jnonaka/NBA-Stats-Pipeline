@@ -34,5 +34,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   nba_stats:
 
+seeds:
+  nba_stats:
+    team_logos:
+
 vars:
     "dbt_date:time_zone": "America/New_York"

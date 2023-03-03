@@ -2,10 +2,10 @@
 
 SELECT
   a.*,
-  b.logo AS home_team_logo,
-  c.logo AS away_team_logo,
+  b.logo_url AS home_team_logo,
+  c.logo_url AS away_team_logo,
 FROM {{ ref('games_stage')}} a
-INNER JOIN {{ source("raw", "teams") }} b
+INNER JOIN {{ ref('team_logos') }} b
 ON a.home_team_id = b.id
-INNER JOIN {{ source("raw", "teams") }} c
+INNER JOIN {{ ref('team_logos') }} c
 ON a.away_team_id = c.id
