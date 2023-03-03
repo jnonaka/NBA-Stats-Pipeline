@@ -19,7 +19,6 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 default_args = {
     "owner": "airflow",
     "start_date": datetime(2023, 2, 15),
-    "end_date": datetime(2023, 2, 27),
     "depends_on_past": False,
     "retries": 1,
 }
