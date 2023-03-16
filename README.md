@@ -8,12 +8,16 @@ This data pipeline extracts basic NBA data using the [API-NBA](https://rapidapi.
 
 This data pipeline should run at no cost if using the GCP free trial given that data pipeline settings are set to extract NBA data for less than 2 seasons
 
-The final output is a [Looker Studio report](TBD) visuzlizing the data collected in GCP BigQuery. 
+The final output is a [Looker Studio report](TBD) visuzlizing the extracted data in Google BigQuery DW.
+
+## Motivation
+The 
+
 
 ## Data Pipeline setup Architecture
 Below is the overall data pipeline architecture. The pipeline is orchestrated with [Airflow](https://airflow.apache.org) within a [Docker](https://www.docker.com) container.
 
- ###IMAGE HERE###
+> ###IMAGE HERE###
 
 1. Create GCP resources with [Terraform](https://www.terraform.io)
 2. Extract data from [API-NBA](https://rapidapi.com/api-sports/api/api-nba) and perform basic transformations
@@ -23,14 +27,14 @@ Below is the overall data pipeline architecture. The pipeline is orchestrated wi
 6. Visualize extracted data using Looker Studio
 
 
-## Output ([Looker Studio Dashboard](www.google.com))
+## Output
  
-###IMAGE HERE###
+>###IMAGE HERE###
 
-
+The final output is a [Looker Studio report](TBD)
 
 ## Data Pipeline Setup
-The first step 
+
 
 
 
