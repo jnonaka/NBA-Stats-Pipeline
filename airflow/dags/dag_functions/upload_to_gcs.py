@@ -1,7 +1,6 @@
 import sys
 import os
 from google.cloud import storage
-from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 
 def upload_to_gcs(bucket, object_name, local_file):
     client = storage.Client()
