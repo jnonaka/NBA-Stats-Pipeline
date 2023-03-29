@@ -13,17 +13,21 @@ headers = {
 }
 
 def api_url(data_type):
-    if data_type == 'games':
+    if data_type == 'games_daily':
         return 'https://api-nba-v1.p.rapidapi.com/games', 'date'
-    elif data_type == 'playerstats':
+    elif data_type == 'games_season':
+        return 'https://api-nba-v1.p.rapidapi.com/games', 'season'
+    elif data_type == 'playerstats_daily':
         return 'https://api-nba-v1.p.rapidapi.com/players/statistics', 'game'
+    elif data_type == 'playerstats_season':
+        return 'https://api-nba-v1.p.rapidapi.com/players/statistics', 'season'
     elif data_type == 'teams':
         return 'https://api-nba-v1.p.rapidapi.com/teams', 'league'
     elif data_type == 'seasons':
         return 'https://api-nba-v1.p.rapidapi.com/seasons', 'seasons'
 
     else:
-        print("data_type input error detected. data_type should be \'games\', \'playerstats\', \'teams\', or \'seasons\'")
+        print("data_type input error detected. data_type should be one of the following: \'games_daily\', \'games_season\', \'playerstats_daily\', \'playerstats_season\', \'teams\', or \'seasons\'")
         sys.exit(1)
 
 def response_error_check(api_response):
@@ -34,7 +38,7 @@ def response_error_check(api_response):
     else:
         pass
 
-def call_api(input, data_type):
+def call_api(data_type, input):
 
     url, param_key =  api_url(data_type)
 
@@ -50,7 +54,7 @@ def call_api(input, data_type):
 
             return response['response'][-1]
             
-        elif param_key == 'date' or param_key == 'league':
+        elif param_key in ('date', 'league', 'season'):
             response = requests.request(
                 "GET", 
                 url=url,
@@ -93,10 +97,10 @@ def call_api(input, data_type):
 if __name__ == "__main__":        
     
     try:
-        input = sys.argv[1]
-        data_type = str(sys.argv[2])
+        data_type = str(sys.argv[1])
+        input = sys.argv[2]
     except Exception as e:
         print(f"Error detected with input. Error {e}")
         sys.exit(1)    
     
-    call_api(input, data_type)
+    call_api(data_type, input)
