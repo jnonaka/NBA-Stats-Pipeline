@@ -6,12 +6,11 @@ import json
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 
 def extract_to_df(api_response):
-    
+
     for i in api_response:
         i['conference'] = i['leagues']['standard']['conference']
         i['division'] = i['leagues']['standard']['division']
         del i['leagues']
-        
         
     out = pd.DataFrame(api_response)
     return out[(out['nbaFranchise'] == True) & (out['allStar'] == False)]
