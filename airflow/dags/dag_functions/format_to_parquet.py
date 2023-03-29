@@ -11,11 +11,15 @@ def format_to_parquet(src_file):
 
 if __name__ == "__main__":    
     try:
-        exec_date = str(sys.argv[1])
+        exec_date = sys.argv[1]
         data_type = sys.argv[2]
     except Exception as e:
         print(f"Error detected with bash input. Error: {e}")
         sys.exit(1)
     
-    local_csv_path = f"{AIRFLOW_HOME}/{data_type}_{exec_date}.csv"
+    if exec_date == 'None':
+        local_csv_path = f"{AIRFLOW_HOME}/{data_type}.csv"
+    else:
+        local_csv_path = f"{AIRFLOW_HOME}/{data_type}_{exec_date}.csv"
+    
     format_to_parquet(local_csv_path)

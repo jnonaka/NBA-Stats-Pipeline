@@ -10,7 +10,7 @@ def upload_to_gcs(bucket, object_name, local_file):
 
 if __name__ == "__main__":
     try:
-        exec_date = str(sys.argv[1])
+        exec_date = sys.argv[1]
         season_val = sys.argv[2]
         data_type = sys.argv[3]
     except Exception as e:
@@ -24,7 +24,12 @@ if __name__ == "__main__":
         OBJECT = f"raw/{season_val}/{data_type}/{data_type}.parquet"    
     else:
         OBJECT = f"raw/{season_val}/{data_type}/{data_type}_{exec_date}.parquet"
-    LOCAL =  f"{AIRFLOW_HOME}/{data_type}_{exec_date}.parquet"
+    
+
+    if exec_date == 'None':
+        LOCAL =  f"{AIRFLOW_HOME}/{data_type}.parquet"
+    else:
+        LOCAL =  f"{AIRFLOW_HOME}/{data_type}_{exec_date}.parquet"
 
     upload_to_gcs(
         bucket = BUCKET,
