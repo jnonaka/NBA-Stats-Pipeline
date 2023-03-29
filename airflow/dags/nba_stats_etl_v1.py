@@ -33,8 +33,9 @@ def games_api_call_data_check(xcom_json):
         return True
 
 with DAG(
-    dag_id="nba_games_and_playerstats",
+    dag_id="nba_games_and_playerstats_v1",
     schedule_interval="@daily",
+    is_paused_upon_creation=True,
     default_args=default_args,
     catchup=True,
     max_active_runs=3,
