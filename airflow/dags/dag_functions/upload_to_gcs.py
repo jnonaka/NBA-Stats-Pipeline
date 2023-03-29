@@ -10,9 +10,9 @@ def upload_to_gcs(bucket, object_name, local_file):
 
 if __name__ == "__main__":
     try:
-        exec_date = sys.argv[1]
+        data_type = sys.argv[1]
         season_val = sys.argv[2]
-        data_type = sys.argv[3]
+        exec_date = sys.argv[3]
     except Exception as e:
         print(f"Error detected with input. Error {e}")
         sys.exit(1)
