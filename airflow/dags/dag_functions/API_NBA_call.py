@@ -19,8 +19,11 @@ def api_url(data_type):
         return 'https://api-nba-v1.p.rapidapi.com/players/statistics', 'game'
     elif data_type == 'teams':
         return 'https://api-nba-v1.p.rapidapi.com/teams', 'league'
+    elif data_type == 'seasons':
+        return 'https://api-nba-v1.p.rapidapi.com/seasons', 'seasons'
+
     else:
-        print("data_type input error detected. data_type should be \'games\', \'playerstats\', or \'teams\'")
+        print("data_type input error detected. data_type should be \'games\', \'playerstats\', \'teams\', or \'seasons\'")
         sys.exit(1)
 
 def response_error_check(api_response):
@@ -36,7 +39,18 @@ def call_api(input, data_type):
     url, param_key =  api_url(data_type)
 
     try:
-        if param_key == 'date' or param_key == 'league':
+        if param_key == 'seasons':
+            response = requests.request(
+                "GET",
+                url,
+                headers=headers
+            ).json()
+            
+            response_error_check(response)
+
+            return response['response'][-1]
+            
+        elif param_key == 'date' or param_key == 'league':
             response = requests.request(
                 "GET", 
                 url=url,
