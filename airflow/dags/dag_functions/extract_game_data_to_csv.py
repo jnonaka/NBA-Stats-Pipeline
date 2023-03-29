@@ -1,6 +1,5 @@
 import os
 import sys
-from dateutil import parser
 import pandas as pd
 import json
 
