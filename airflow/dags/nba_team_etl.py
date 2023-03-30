@@ -58,12 +58,12 @@ with DAG(
 
     format_to_parquet_teams = BashOperator(
         task_id = 'format_to_parquet_teams',
-        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/format_to_parquet.py None teams" 
+        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/format_to_parquet.py teams None" 
     )
 
     upload_to_gcs_teams = BashOperator(
         task_id = 'upload_to_gcs_teams',
-        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/upload_to_gcs.py None {season_val} teams" 
+        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/upload_to_gcs.py teams {season_val} None" 
     )
 
     transfer_to_bigquery_teams = GCSToBigQueryOperator(
@@ -91,4 +91,5 @@ with DAG(
             bash_command=f"rm {AIRFLOW_HOME}/teams.csv {AIRFLOW_HOME}/teams.parquet"
         )
     
-    teams_api_call >> extract_teams_data_to_csv >> format_to_parquet_teams >> upload_to_gcs_teams >> transfer_to_bigquery_teams >> remove_all_local_files
+    seasons_api_call >> teams_api_call >> extract_teams_data_to_csv >> format_to_parquet_teams \
+        >> upload_to_gcs_teams >> transfer_to_bigquery_teams >> remove_all_local_files
