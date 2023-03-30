@@ -1,7 +1,7 @@
 import os
 import json
 from airflow import DAG
-from datetime import datetime
+from datetime import datetime, timedelta
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.operators.python import ShortCircuitOperator
@@ -17,7 +17,7 @@ AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 
 default_args = {
     "owner": "airflow",
-    "start_date": datetime(2023, 1,1),
+    "start_date": datetime.today() - timedelta(days=7),
     "depends_on_past": False,
     "retries": 1,
 }
@@ -33,20 +33,32 @@ def games_api_call_data_check(xcom_json):
         return True
 
 with DAG(
-    dag_id="nba_games_and_playerstats",
+    dag_id="nba_games_and_playerstats_v1",
     schedule_interval="@daily",
+    is_paused_upon_creation=True,
     default_args=default_args,
     catchup=True,
     max_active_runs=3,
     tags=['nba-stats'],
 ) as dag:
+    seasons_api_call = PythonOperator(
+        task_id = 'seasons_api_call',
+        python_callable = call_api,
+        op_kwargs = {
+            'data_type': 'seasons',
+            'input': None
+        },
+        do_xcom_push=True
+    )
 
+    season_val = "{{ ti.xcom_pull(task_ids='seasons_api_call', key='return_value') }}"
+    
     games_api_call = PythonOperator(
         task_id = 'games_api_call',
         python_callable = call_api,
         op_kwargs = {
-            'input': exec_date,
-            'data_type': 'games'
+            'data_type': 'games_daily',
+            'input': exec_date
         },
         do_xcom_push=True
     )
@@ -71,18 +83,16 @@ with DAG(
         do_xcom_push=True
     )
 
-    # Extract season value from extract_game_data_to_csv task for GCS organization and BQ table table name
-    season_val = "{{ ti.xcom_pull(task_ids='extract_game_data_to_csv', key='return_value')[1] }}"
-    game_list = "{{ ti.xcom_pull(task_ids='extract_game_data_to_csv', key='return_value')[0] }}"
+    game_list = "{{ ti.xcom_pull(task_ids='extract_game_data_to_csv', key='return_value') }}"
 
     format_to_parquet_game = BashOperator(
         task_id = 'format_to_parquet_game',
-        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/format_to_parquet.py {exec_date} games" 
+        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/format_to_parquet.py games {exec_date}" 
     )
 
     upload_to_gcs_game = BashOperator(
         task_id = 'upload_to_gcs_game',
-        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/upload_to_gcs.py {exec_date} {season_val} games" 
+        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/upload_to_gcs.py games {season_val} {exec_date}" 
     )
 
     transfer_to_bigquery_game = GCSToBigQueryOperator(
@@ -109,13 +119,11 @@ with DAG(
         task_id = 'playerstats_api_call',
         python_callable = call_api,
         op_kwargs = {
-            'input': game_list,
-            'data_type': 'playerstats'
+            'data_type': 'playerstats_daily',
+            'input': game_list
         },
         do_xcom_push=True
     )
-
-    playerstats_xcom_json = "{{ ti.xcom_pull(task_ids='playerstats_api_call', key='return_value') | tojson }}"
     
     extract_playerstats_data_to_csv = PythonOperator(
         task_id = 'extract_playerstats_data_to_csv',
@@ -128,12 +136,12 @@ with DAG(
 
     format_to_parquet_playerstats = BashOperator(
         task_id = 'format_to_parquet_playerstats',
-        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/format_to_parquet.py {exec_date} playerstats" 
+        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/format_to_parquet.py playerstats {exec_date}" 
     )
 
     upload_to_gcs_playerstats = BashOperator(
         task_id = 'upload_to_gcs_playerstats',
-        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/upload_to_gcs.py {exec_date} {season_val} playerstats" 
+        bash_command = f"python {AIRFLOW_HOME}/dags/dag_functions/upload_to_gcs.py playerstats {season_val} {exec_date}" 
     )
 
     transfer_to_bigquery_playerstats = GCSToBigQueryOperator(
@@ -182,8 +190,8 @@ with DAG(
                 {AIRFLOW_HOME}/playerstats_{exec_date}.csv {AIRFLOW_HOME}/playerstats_{exec_date}.parquet" 
         )
 
-    
-    games_api_call  >> games_api_call_check >> extract_game_data_to_csv >> format_to_parquet_game  >> upload_to_gcs_game >> transfer_to_bigquery_game >> remove_all_local_files
+    seasons_api_call >> games_api_call  >> games_api_call_check >> extract_game_data_to_csv >> format_to_parquet_game  \
+        >> upload_to_gcs_game >> transfer_to_bigquery_game >> remove_all_local_files
     
     extract_game_data_to_csv >> playerstats_api_call >> extract_playerstats_data_to_csv >> format_to_parquet_playerstats \
         >> upload_to_gcs_playerstats >> transfer_to_bigquery_playerstats >> remove_all_local_files

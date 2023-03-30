@@ -10,9 +10,9 @@ def upload_to_gcs(bucket, object_name, local_file):
 
 if __name__ == "__main__":
     try:
-        exec_date = str(sys.argv[1])
+        data_type = sys.argv[1]
         season_val = sys.argv[2]
-        data_type = sys.argv[3]
+        exec_date = sys.argv[3]
     except Exception as e:
         print(f"Error detected with input. Error {e}")
         sys.exit(1)
@@ -20,11 +20,18 @@ if __name__ == "__main__":
     AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
     BUCKET = os.environ.get("GCP_GCS_BUCKET")
     
-    if data_type == 'teams':
+    if exec_date == 'None':
         OBJECT = f"raw/{season_val}/{data_type}/{data_type}.parquet"    
     else:
         OBJECT = f"raw/{season_val}/{data_type}/{data_type}_{exec_date}.parquet"
-    LOCAL =  f"{AIRFLOW_HOME}/{data_type}_{exec_date}.parquet"
+    
+
+    if exec_date == 'None':
+        LOCAL =  f"{AIRFLOW_HOME}/{data_type}.parquet"
+    else:
+        LOCAL =  f"{AIRFLOW_HOME}/{data_type}_{exec_date}.parquet"
+
+    print('Local Name:', LOCAL)
 
     upload_to_gcs(
         bucket = BUCKET,

@@ -1,6 +1,5 @@
 import os
 import sys
-from dateutil import parser
 import pandas as pd
 import json
 
@@ -12,20 +11,17 @@ def extract_to_df(api_response):
     season = [game['season'] for game in api_response]
     datetime_utc = [game['date']['start'] for game in api_response]
     away_team_id = [game['teams']['visitors']['id'] for game in api_response]
-    # away_team_name = [game['teams']['visitors']['name'] for game in api_response]
     away_team_code = [game['teams']['visitors']['code'] for game in api_response]
     home_team_id = [game['teams']['home']['id'] for game in api_response]
-    # home_team_name = [game['teams']['home']['name'] for game in api_response]
     home_team_code = [game['teams']['home']['code'] for game in api_response]
     away_score = [game['scores']['visitors']['points'] for game in api_response]
     home_score = [game['scores']['home']['points'] for game in api_response]
-
-    # Extract season value. Assumption is that all games played on a single day will be from the same season
-    season_val = season[0]
+    status = [game['status']['long'] for game in api_response]
 
     # Create and return dataframe, the game_ids (used to pull player stats from these games),
     # and the season (used to organize GCS bucket and BQ)
-    return pd.DataFrame({
+
+    game_df = pd.DataFrame({
         'game_id': game_id, 
         'season': season, 
         'datetime_utc': datetime_utc,
@@ -34,19 +30,32 @@ def extract_to_df(api_response):
         'home_team_id': home_team_id,
         'home_team_code': home_team_code,
         'away_score': away_score,
-        'home_score': home_score
-    }), game_id, season_val
+        'home_score': home_score,
+        'status': status
+    })
 
-def format_csv(df, date):
-    df.to_csv(
-        f"{AIRFLOW_HOME}/games_{date}.csv",
-        index=False
-    )
+    # Drop games that are not 'Finished
+    game_df = game_df[game_df['status'] == 'Finished'].drop(['status'], axis = 1)
 
-def main(xcom_json, date):
-    game_df, game_id, season_val  = extract_to_df(json.loads(xcom_json))
+    game_df['away_team_id'] = pd.to_numeric(game_df['away_team_id'], errors='coerce').astype('Int64')
+    game_df['home_team_id'] = pd.to_numeric(game_df['home_team_id'], errors='coerce').astype('Int64')
+    game_df['away_score'] = pd.to_numeric(game_df['away_score'], errors='coerce').astype('Int64')
+    game_df['home_score'] = pd.to_numeric(game_df['home_score'], errors='coerce').astype('Int64')
+
+    return game_df, game_id
+
+def format_csv(df, date= None):
+    if date is None:
+        path = f"{AIRFLOW_HOME}/games.csv"
+    else:
+        path = f"{AIRFLOW_HOME}/games_{date}.csv"
+    print(path)
+    df.to_csv(path, index=False)
+
+def main(xcom_json, date = None):
+    game_df, game_id  = extract_to_df(json.loads(xcom_json))
     format_csv(game_df, date)
-    return game_id, season_val
+    return game_id
 
 if __name__ == '__main__':
     
