@@ -37,10 +37,15 @@ def extract_to_df(api_response):
     # Drop games that are not 'Finished
     game_df = game_df[game_df['status'] == 'Finished'].drop(['status'], axis = 1)
 
+    game_df['away_team_id'] = pd.to_numeric(game_df['away_team_id'], errors='coerce').astype('Int64')
+    game_df['home_team_id'] = pd.to_numeric(game_df['home_team_id'], errors='coerce').astype('Int64')
+    game_df['away_score'] = pd.to_numeric(game_df['away_score'], errors='coerce').astype('Int64')
+    game_df['home_score'] = pd.to_numeric(game_df['home_score'], errors='coerce').astype('Int64')
+
     return game_df, game_id
 
 def format_csv(df, date= None):
-    if date is None or date == 'None':
+    if date is None:
         path = f"{AIRFLOW_HOME}/games.csv"
     else:
         path = f"{AIRFLOW_HOME}/games_{date}.csv"
