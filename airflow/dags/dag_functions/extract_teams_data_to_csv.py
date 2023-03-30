@@ -26,7 +26,6 @@ def main(xcom_json):
     format_csv(teams_df)
 
 if __name__ == '__main__':
-    
     try:
         xcom_json = json.loads(sys.argv[1])
     except Exception as e:
