@@ -6,4 +6,4 @@ select
     DATETIME(datetime_utc, "America/New_York") as datetime_est,
     DATE(DATETIME(datetime_utc, "America/New_York")) as date_est,
     home_score - away_score as home_away_score_differential 
-from {{ source("raw", "games") }}
+from {{ source("raw", "games_2022") }}
