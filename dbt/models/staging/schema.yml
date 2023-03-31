@@ -6,9 +6,9 @@ sources:
     schema: nba_data_all
     
     tables:
-      - name: playerstats
+      - name: playerstats_2022
       - name: teams
-      - name: games
+      - name: games_2022
 
 models:
   - name: playerstats_stage
