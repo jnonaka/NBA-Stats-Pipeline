@@ -2,6 +2,7 @@ version: 2
 
 sources:
   - name: raw
+    # Replace with your own dataase name
     database: nba-stats-377921
     schema: nba_data_all
     
@@ -13,9 +14,139 @@ sources:
 models:
   - name: playerstats_stage
     description: > 
-      Insert description here
-    # columns:
+      Staging table calculating several advanced metrics (efgp, tsp, and GmSc) using base player statistics
+    columns:
+      - name: game_id
+        data_type: integer
+        description: The id of the NBA game
+      - name: team_code
+        data_type: string
+        description: The team code for the player's team
+      - name: team_id
+        data_type: integer
+        description: The team id for the player's team
+      - name: team_name
+        data_type: string
+        description: The full team name for the player's team
+      - name: player_id
+        data_type: integer
+        description: The player id for the player
+      - name: player_firstname
+        data_type: string
+        description: The player's first name
+      - name: player_lastname
+        data_type: string
+        description: The player's last name
+      - name: pos
+        data_type: string
+        description: The player's position
+      - name: assists
+        data_type: integer
+        description: The number of assists -- passes that lead directly to a made basket -- by a player
+      - name: blocks
+        data_type: integer
+        description: The number of a times a devensive player blocks the offensive player's shot attempts
+      - name: defReb
+        data_type: integer
+        description: The number of rebounds a player has collected while they were on defense 
+      - name: fga
+        data_type: integer
+        description: The number of field goals that a player has attempted. This includes both 2 pointers and 3 pointers
+      - name: fgm
+        data_type: integer
+        description: The number of field goals that a player has made. This includes both 2 pointers and 3 pointers
+      - name: fgp
+        data_type: float
+        description: The percentage of field goal attempts that a player makes
+      - name: fta
+        data_type: integer
+        description: The number of free throws that a player has attempted
+      - name: ftp
+        data_type: float
+        description: The percentage of free throw attempts that a player has made
+      - name: min
+        data_type: integer
+        description: The number of minutes played by a player 
+      - name: offReb
+        data_type: integer
+        description: The number of rebounds a player has collected while they were on offense 
+      - name: pFouls
+        data_type: integer
+        description: The number of personal fouls a player or team committed
+      - name: plusMinus
+        data_type: integer
+        description: The point differential when a player or team is on the floor
+      - name: points
+        data_type: integer
+        description: The number of points a player has scored
+      - name: steals
+        data_type: integer
+        description: Number of times a defensive player or team takes the ball from a player on offense, causing a turnover
+      - name: totReb
+        data_type: integer
+        description: The number of rebounds a player has collected on both offense and defense
+      - name: tpa
+        data_type: integer
+        description: The number of 3 point field goals that a player or team has attempted
+      - name: tpm
+        data_type: integer
+        description: The number of 3 point field goals that a player or team has made
+      - name: tpp
+        data_type: float
+        description: The percentage 3 point field goals that a player or team has made
+      - name: turnovers
+        data_type: integer
+        description: The number of occurences where the player or team on offense loses the ball to the defense
+      - name: efgp
+        data_type: float
+        description: Measures field goal percentage adjusting for made 3-point field goals being 1.5 times more valuable than made 2-point field goals
+      - name: tsp
+        data_type: float
+        description: A shooting percentage that factors in the value of three-point field goals and free throws in addition to conventional two-point field goals
+      - name: GmSc
+        data_type: float
+        description: Game Score was created by John Hollinger to give a rough measure of a player's productivity for a single game. The scale is similar to that of points scored, (40 is an outstanding performance, 10 is an average performance, etc.).
+
   - name: games_stage
     description: > 
-      Insert description here
-    # columns:
+      Staging table creating game label (e.g., ATL vs. BOS), converting game date/datetime to EST from UTC, and the home_away_score_differential for each game
+    columns:
+      - name: game_id
+        data_type: integer
+        description: The id of the NBA game
+      - name: season
+        data_type: integer
+        description: The season of the NBA game
+      - name: datetime_utc
+        data_type: timestamp
+        description: The datetime the NBA game started (UTC)
+      - name: away_team_id
+        data_type: integer
+        description: The team id for the away team
+      - name: away_team_code
+        data_type: string
+        description: The team code for the away team
+      - name: away_score
+        data_type: integer
+        description: The points scored by the away team
+      - name: home_team_id
+        data_type: integer
+        description: The team id for the home team
+      - name: home_team_code
+        data_type: string
+        description: The team code for the home team
+      - name: home_score
+        data_type: integer
+        description: The points scored by the home team
+      - name: game_label
+        data_type: string
+        description: The game label combining away team code vs. home team code
+      - name: datetime_est
+        data_type: datetime
+        description: The datetime the NBA game started (EST)
+      - name: date_est
+        data_type: date
+        description: The date of the NBA game (EST)
+      - name: home_away_score_differential
+        data_type: integer
+        description: The score differencial between the home team and the away team (home - away)
