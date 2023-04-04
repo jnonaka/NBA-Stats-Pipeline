@@ -1,4 +1,4 @@
-# NBA-Stats-Pipeline
+# NBA-Stats-Pipeline #
 
 ## Summary
 This data pipeline extracts basic NBA data using the [API-NBA](https://rapidapi.com/api-sports/api/api-nba) endpoint hosted on [Rapid API](https://rapidapi.com/). Collected data includes:
@@ -6,37 +6,51 @@ This data pipeline extracts basic NBA data using the [API-NBA](https://rapidapi.
 - Completed NBA games (excludes scheduled and live games)
 - Player statistics for each NBA compleged NBA game
 
-This data pipeline should run at no cost if using the GCP free trial given that data pipeline settings are set to extract NBA data for less than 2 seasons
-
-The final output is a [Looker Studio report](TBD) visuzlizing the extracted data in Google BigQuery DW.
+The final output is a [Looker Studio report](https://lookerstudio.google.com/s/pfKCuj6pvMQ) visuzlizing the extracted data in BigQuery .
 
 ## Motivation
-The 
+The overall motivation for this project was to build an end-to-end ETL data pipeline using real world data. Some of the key objectives I had for completing this project were:
+- Complete a full exercise comprising of designing and building out the architecture for an end-to-end ETL data pipeline
+- Gain further experience and skills in the common tools used in the modern data stack
+- Demonstrate my understanding, technical knowhow, and aptitude as a senior data analyst/data engineer
 
+My ultimate goal is to continue to gain experience as a senior data analyst in my next professional role and ultimately transition to a data engineering role.
 
-## Data Pipeline setup Architecture
-Below is the overall data pipeline architecture. The pipeline is orchestrated with [Airflow](https://airflow.apache.org) within a [Docker](https://www.docker.com) container.
-
-> ###IMAGE HERE###
+## Tools & Architecture
+Below is the list of tools used and the data pipeline architecture. The pipeline is orchestrated with [Airflow](https://airflow.apache.org) within a [Docker](https://www.docker.com) container.
 
 1. Create GCP resources with [Terraform](https://www.terraform.io)
-2. Extract data from [API-NBA](https://rapidapi.com/api-sports/api/api-nba) and perform basic transformations
-3. Load the data into [Google Cloud Storage](google.com)
-4. Load the data from cloud storage to BigQuery DW
-5. Perform further transformation with [dbt](https://www.getdbt.com)
-6. Visualize extracted data using Looker Studio
+2. Extract data from [API-NBA](https://rapidapi.com/api-sports/api/api-nba) endpoint hosted on [Rapid API](https://rapidapi.com/)
+3. Transform API response data using [Pandas](https://pandas.pydata.org/) and convert to CSV/Parquet files
+4. Load parquetized data into [Google Cloud Storage](https://cloud.google.com/storage)
+5. Load the data from Google Cloud Storage to [BigQuery Data Warehouse](https://cloud.google.com/bigquery)
+6. Perform further transformation with [dbt](https://www.getdbt.com)
+7. Visualize extracted data using [Looker Studio](https://cloud.google.com/looker-studio)
 
+</br> <img src='images/NBA_Pipeline_Architecture.png'> 
 
-## Output
- 
->###IMAGE HERE###
+</br>
 
-The final output is a [Looker Studio report](TBD)
+## Output ##
+The final output is a [Looker Studio report](https://lookerstudio.google.com/s/pfKCuj6pvMQ) visualizing the data transformed in dbt and loaded in BigQuery. Given the focus of this project was to build a ETL data pipeline from end-to-end, the visualizations in the report are basic. They include:
+- The results of the most recent games
+- League leaders in:
+    - Points per Game (PPG)
+    - Assists per Game (APG)
+    - Rebounds per Game (RPG)
+    - Minutes
+    - Steals per Game
+    - [Game Score (GmSc)](https://www.nbastuffer.com/analytics101/game-score/)
+- GmSc vs. Minutes Scatterplot
+
+</br> <img src='images/Looker_Studio_Screenshot.png'>
+</br>
 
 ## Data Pipeline Setup
+Below is the step-by-step instructions to set up and run this pipeine
 
+> ##WORK  IN PROGRESS##
 
+</br>
 
-
-
-> **NOTE**: I developed this pipeline using an M1 Mac. There may be further configurations and/or set up required to run this data pipeline for Windows, Linux, or any other OS enviornment.
+> **NOTE**: This pipeline using an M1 Mac. There may be further configurations and/or set up required to run this data pipeline for Windows, Linux, or any other OS enviornment.
