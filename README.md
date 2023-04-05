@@ -4,9 +4,9 @@
 This data pipeline extracts basic NBA data using the [API-NBA](https://rapidapi.com/api-sports/api/api-nba) endpoint hosted on [Rapid API](https://rapidapi.com/). Collected data includes:
 - Team data (e.g., name, city, conference, division, etc.)
 - Completed NBA games (excludes scheduled and live games)
-- Player statistics for each NBA compleged NBA game
+- Player statistics for each NBA completed NBA game
 
-The final output is a [Looker Studio report](https://lookerstudio.google.com/s/pfKCuj6pvMQ) visuzlizing the extracted data in BigQuery .
+The final output is a [Looker Studio report](https://lookerstudio.google.com/s/pfKCuj6pvMQ) visualizing the extracted data in BigQuery
 
 ## Motivation
 The overall motivation for this project was to build an end-to-end ETL data pipeline using real world data. Some of the key objectives I had for completing this project were:
@@ -14,7 +14,7 @@ The overall motivation for this project was to build an end-to-end ETL data pipe
 - Gain further experience and skills in the common tools used in the modern data stack
 - Demonstrate my understanding, technical knowhow, and aptitude as a senior data analyst/data engineer
 
-My ultimate goal is to continue to gain experience as a senior data analyst in my next professional role and ultimately transition to a data engineering role.
+My goal is to continue to gain experience as a senior data analyst in my next professional role and ultimately transition to a data engineering role.
 
 ## Tools & Architecture
 Below is the list of tools used and the data pipeline architecture. The pipeline is orchestrated with [Airflow](https://airflow.apache.org) within a [Docker](https://www.docker.com) container.
@@ -47,10 +47,10 @@ The final output is a [Looker Studio report](https://lookerstudio.google.com/s/p
 </br>
 
 ## Data Pipeline Setup
-Below is the step-by-step instructions to set up and run this pipeine
+Below are the step-by-step instructions to set up and run this pipeline
 
 > ##WORK  IN PROGRESS##
 
 </br>
 
-> **NOTE**: This pipeline using an M1 Mac. There may be further configurations and/or set up required to run this data pipeline for Windows, Linux, or any other OS enviornment.
+> **NOTE**: This pipeline using an M1 Mac. There may be further configurations and/or set up required to run this data pipeline for Windows, Linux, or any other OS environment.
